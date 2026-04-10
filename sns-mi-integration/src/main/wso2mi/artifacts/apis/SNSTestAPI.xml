@@ -16,13 +16,17 @@
             <property name="sns.region" expression="get-property('env', 'sns_region')" scope="default" type="STRING"/>
             <property name="sns.topicArn" expression="get-property('env', 'sns_topic_arn')" scope="default" type="STRING"/>
             <property name="sns.messageGroupId" value="default-group" scope="default" type="STRING"/>
-            <!-- Log resolved properties -->
+            <!-- Log raw env var values and resolved properties -->
             <log level="custom">
-                <property name="=== SNSTestAPI /publish ===" value="Properties set from env"/>
-                <property name="sns.accessKeyId SET" expression="boolean(get-property('sns.accessKeyId'))"/>
-                <property name="sns.secretAccessKey SET" expression="boolean(get-property('sns.secretAccessKey'))"/>
-                <property name="sns.region" expression="get-property('sns.region')"/>
-                <property name="sns.topicArn" expression="get-property('sns.topicArn')"/>
+                <property name="=== SNSTestAPI /publish ===" value="DEBUG env vars"/>
+                <property name="env.sns_access_key_id" expression="get-property('env', 'sns_access_key_id')"/>
+                <property name="env.sns_secret_access_key" expression="get-property('env', 'sns_secret_access_key')"/>
+                <property name="env.sns_region" expression="get-property('env', 'sns_region')"/>
+                <property name="env.sns_topic_arn" expression="get-property('env', 'sns_topic_arn')"/>
+                <property name="prop.sns.accessKeyId" expression="get-property('sns.accessKeyId')"/>
+                <property name="prop.sns.secretAccessKey" expression="get-property('sns.secretAccessKey')"/>
+                <property name="prop.sns.region" expression="get-property('sns.region')"/>
+                <property name="prop.sns.topicArn" expression="get-property('sns.topicArn')"/>
             </log>
             <class name="org.wso2.custom.mediator.sns.SNSPublishMediator">
                 <property name="region" value="eu-north-1"/>
@@ -69,13 +73,17 @@
             <!-- Topic ARN and message group ID from query parameters (override env) -->
             <property expression="$url:topicArn" name="sns.topicArn" scope="default" type="STRING"/>
             <property expression="$url:messageGroupId" name="sns.messageGroupId" scope="default" type="STRING"/>
-            <!-- Log resolved properties -->
+            <!-- Log raw env var values and resolved properties -->
             <log level="custom">
-                <property name="=== SNSTestAPI /publish-dynamic ===" value="Properties set from env"/>
-                <property name="sns.accessKeyId SET" expression="boolean(get-property('sns.accessKeyId'))"/>
-                <property name="sns.secretAccessKey SET" expression="boolean(get-property('sns.secretAccessKey'))"/>
-                <property name="sns.region" expression="get-property('sns.region')"/>
-                <property name="sns.topicArn" expression="get-property('sns.topicArn')"/>
+                <property name="=== SNSTestAPI /publish-dynamic ===" value="DEBUG env vars"/>
+                <property name="env.sns_access_key_id" expression="get-property('env', 'sns_access_key_id')"/>
+                <property name="env.sns_secret_access_key" expression="get-property('env', 'sns_secret_access_key')"/>
+                <property name="env.sns_region" expression="get-property('env', 'sns_region')"/>
+                <property name="env.sns_topic_arn" expression="get-property('env', 'sns_topic_arn')"/>
+                <property name="prop.sns.accessKeyId" expression="get-property('sns.accessKeyId')"/>
+                <property name="prop.sns.secretAccessKey" expression="get-property('sns.secretAccessKey')"/>
+                <property name="prop.sns.region" expression="get-property('sns.region')"/>
+                <property name="prop.sns.topicArn" expression="get-property('sns.topicArn')"/>
             </log>
             <class name="org.wso2.custom.mediator.sns.SNSPublishMediator">
                 <property name="region" value="eu-north-1"/>
