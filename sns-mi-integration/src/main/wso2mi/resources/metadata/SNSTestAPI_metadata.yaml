@@ -4,7 +4,6 @@ name: SNSTestAPI
 displayName: SNSTestAPI
 version: v1.0.0
 serviceUrl: http://localhost:8290/sns
-definitionType: REST
 description: "REST API for publishing messages to Amazon SNS via a custom class mediator"
 mutualSslEnabled: false
 securityType: NONE
