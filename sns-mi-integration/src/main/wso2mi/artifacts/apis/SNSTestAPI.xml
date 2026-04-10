@@ -2,26 +2,28 @@
 <api context="/sns" name="SNSTestAPI" xmlns="http://ws.apache.org/ns/synapse">
 
     <!--
-        Credentials: Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as
-        environment variables in Choreo Config & Deploy. The AWS SDK
-        DefaultCredentialsProvider picks them up automatically.
-
-        Region and Topic ARN are configured as static class mediator
-        properties below.
+        Credentials and config are read from Choreo environment variables:
+          sns_access_key_id, sns_secret_access_key, sns_region, sns_topic_arn
+        They are set as message-context properties that the class mediator picks up.
     -->
 
     <!-- Resource 1: POST /publish — static topic ARN -->
     <resource methods="POST" uri-template="/publish">
         <inSequence>
-            <!-- Log AWS env variable availability -->
-            <log level="custom">
-                <property name="=== SNSTestAPI /publish ===" value="Checking AWS environment variables"/>
-                <property name="AWS_ACCESS_KEY_ID" expression="get-property('env', 'AWS_ACCESS_KEY_ID')"/>
-                <property name="AWS_SECRET_ACCESS_KEY_SET" expression="boolean(get-property('env', 'AWS_SECRET_ACCESS_KEY'))"/>
-                <property name="aws.accessKeyId (system prop)" expression="get-property('system', 'aws.accessKeyId')"/>
-                <property name="aws.secretAccessKey (system prop set)" expression="boolean(get-property('system', 'aws.secretAccessKey'))"/>
-            </log>
+            <!-- Read Choreo env vars and set as properties the mediator expects -->
+            <property name="sns.accessKeyId" expression="get-property('env', 'sns_access_key_id')" scope="default" type="STRING"/>
+            <property name="sns.secretAccessKey" expression="get-property('env', 'sns_secret_access_key')" scope="default" type="STRING"/>
+            <property name="sns.region" expression="get-property('env', 'sns_region')" scope="default" type="STRING"/>
+            <property name="sns.topicArn" expression="get-property('env', 'sns_topic_arn')" scope="default" type="STRING"/>
             <property name="sns.messageGroupId" value="default-group" scope="default" type="STRING"/>
+            <!-- Log resolved properties -->
+            <log level="custom">
+                <property name="=== SNSTestAPI /publish ===" value="Properties set from env"/>
+                <property name="sns.accessKeyId SET" expression="boolean(get-property('sns.accessKeyId'))"/>
+                <property name="sns.secretAccessKey SET" expression="boolean(get-property('sns.secretAccessKey'))"/>
+                <property name="sns.region" expression="get-property('sns.region')"/>
+                <property name="sns.topicArn" expression="get-property('sns.topicArn')"/>
+            </log>
             <class name="org.wso2.custom.mediator.sns.SNSPublishMediator">
                 <property name="region" value="eu-north-1"/>
                 <property name="topicArn" value="arn:aws:sns:eu-north-1:567870626192:FIFO-MI.fifo"/>
@@ -60,17 +62,21 @@
     <!-- Resource 2: POST /publish-dynamic?topicArn={arn}&messageGroupId={id} — dynamic topic ARN -->
     <resource methods="POST" uri-template="/publish-dynamic">
         <inSequence>
-            <!-- Log AWS env variable availability -->
-            <log level="custom">
-                <property name="=== SNSTestAPI /publish-dynamic ===" value="Checking AWS environment variables"/>
-                <property name="AWS_ACCESS_KEY_ID" expression="get-property('env', 'AWS_ACCESS_KEY_ID')"/>
-                <property name="AWS_SECRET_ACCESS_KEY_SET" expression="boolean(get-property('env', 'AWS_SECRET_ACCESS_KEY'))"/>
-                <property name="aws.accessKeyId (system prop)" expression="get-property('system', 'aws.accessKeyId')"/>
-                <property name="aws.secretAccessKey (system prop set)" expression="boolean(get-property('system', 'aws.secretAccessKey'))"/>
-            </log>
-            <!-- Topic ARN and message group ID from query parameters -->
+            <!-- Read Choreo env vars and set as properties the mediator expects -->
+            <property name="sns.accessKeyId" expression="get-property('env', 'sns_access_key_id')" scope="default" type="STRING"/>
+            <property name="sns.secretAccessKey" expression="get-property('env', 'sns_secret_access_key')" scope="default" type="STRING"/>
+            <property name="sns.region" expression="get-property('env', 'sns_region')" scope="default" type="STRING"/>
+            <!-- Topic ARN and message group ID from query parameters (override env) -->
             <property expression="$url:topicArn" name="sns.topicArn" scope="default" type="STRING"/>
             <property expression="$url:messageGroupId" name="sns.messageGroupId" scope="default" type="STRING"/>
+            <!-- Log resolved properties -->
+            <log level="custom">
+                <property name="=== SNSTestAPI /publish-dynamic ===" value="Properties set from env"/>
+                <property name="sns.accessKeyId SET" expression="boolean(get-property('sns.accessKeyId'))"/>
+                <property name="sns.secretAccessKey SET" expression="boolean(get-property('sns.secretAccessKey'))"/>
+                <property name="sns.region" expression="get-property('sns.region')"/>
+                <property name="sns.topicArn" expression="get-property('sns.topicArn')"/>
+            </log>
             <class name="org.wso2.custom.mediator.sns.SNSPublishMediator">
                 <property name="region" value="eu-north-1"/>
             </class>
