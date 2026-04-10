@@ -20,12 +20,12 @@
     <!-- Resource 1: POST /publish — topic ARN from vault -->
     <resource methods="POST" uri-template="/publish">
         <inSequence>
-            <!-- Read all configuration from Secure Vault / Choreo secrets -->
+            <!-- Read all configuration from environment variables -->
             <propertyGroup>
-                <property expression="wso2:vault-lookup('sns_region')" name="sns.region" scope="default" type="STRING"/>
-                <property expression="wso2:vault-lookup('sns_topic_arn')" name="sns.topicArn" scope="default" type="STRING"/>
-                <property expression="wso2:vault-lookup('aws_access_key_id')" name="sns.accessKeyId" scope="default" type="STRING"/>
-                <property expression="wso2:vault-lookup('aws_secret_access_key')" name="sns.secretAccessKey" scope="default" type="STRING"/>
+                <property expression="get-property('env', 'sns_region')" name="sns.region" scope="default" type="STRING"/>
+                <property expression="get-property('env', 'sns_topic_arn')" name="sns.topicArn" scope="default" type="STRING"/>
+                <property expression="get-property('env', 'aws_access_key_id')" name="sns.accessKeyId" scope="default" type="STRING"/>
+                <property expression="get-property('env', 'aws_secret_access_key')" name="sns.secretAccessKey" scope="default" type="STRING"/>
                 <!-- Required for FIFO topics -->
                 <property name="sns.messageGroupId" value="default-group" scope="default" type="STRING"/>
             </propertyGroup>
@@ -64,11 +64,11 @@
     <!-- Resource 2: POST /publish-dynamic?topicArn={arn}&messageGroupId={id} — dynamic topic ARN -->
     <resource methods="POST" uri-template="/publish-dynamic">
         <inSequence>
-            <!-- Region and credentials from Secure Vault / Choreo secrets -->
+            <!-- Region and credentials from environment variables -->
             <propertyGroup>
-                <property expression="wso2:vault-lookup('sns_region')" name="sns.region" scope="default" type="STRING"/>
-                <property expression="wso2:vault-lookup('aws_access_key_id')" name="sns.accessKeyId" scope="default" type="STRING"/>
-                <property expression="wso2:vault-lookup('aws_secret_access_key')" name="sns.secretAccessKey" scope="default" type="STRING"/>
+                <property expression="get-property('env', 'sns_region')" name="sns.region" scope="default" type="STRING"/>
+                <property expression="get-property('env', 'aws_access_key_id')" name="sns.accessKeyId" scope="default" type="STRING"/>
+                <property expression="get-property('env', 'aws_secret_access_key')" name="sns.secretAccessKey" scope="default" type="STRING"/>
             </propertyGroup>
             <!-- Topic ARN and message group ID from query parameters -->
             <property expression="$url:topicArn" name="sns.topicArn" scope="default" type="STRING"/>
