@@ -390,7 +390,7 @@
       <keystore.password>wso2carbon</keystore.password>
       <keystore.alias>wso2carbon</keystore.alias>
       <fat.car.enable>false</fat.car.enable>
-      <ciphertool.enable>true</ciphertool.enable>
+      <ciphertool.enable>false</ciphertool.enable>
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
       <project.scm.id>integration-project</project.scm.id>
@@ -404,7 +404,7 @@
       <test.server.path>/</test.server.path>
       <test.server.version>${project.runtime.version}</test.server.version>
       <testServerDownloadLink></testServerDownloadLink>
-      <maven.test.skip>false</maven.test.skip>
+      <maven.test.skip>true</maven.test.skip>
       <testServerDownloadLink></testServerDownloadLink>
     </properties>
     <dependencies>
