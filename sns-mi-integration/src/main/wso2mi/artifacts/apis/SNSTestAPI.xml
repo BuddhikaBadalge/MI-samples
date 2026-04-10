@@ -2,23 +2,24 @@
 <api context="/sns" name="SNSTestAPI" xmlns="http://ws.apache.org/ns/synapse">
 
     <!--
-        Resource 1: POST /publish
-        Static configuration — region, topicArn, and credentials are set directly on the mediator.
-        Replace the property values below with your own AWS values.
+        Credentials are intentionally omitted from this file.
+        The mediator falls back to the AWS Default Credentials Provider Chain:
+          - Choreo / container: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as environment variables
+          - Local dev: configure ~/.aws/credentials or use an IAM instance role
+
+        Replace YOUR_AWS_REGION and YOUR_SNS_TOPIC_ARN with your actual values.
     -->
+
+    <!-- Resource 1: POST /publish — static topicArn config -->
     <resource methods="POST" uri-template="/publish">
         <inSequence>
-            <!-- MessageGroupId is required for FIFO topics -->
+            <!-- Required for FIFO topics -->
             <property name="sns.messageGroupId" value="default-group" scope="default" type="STRING"/>
             <class name="org.wso2.custom.mediator.sns.SNSPublishMediator">
-                <!-- CHANGE: your AWS region, e.g. us-east-1 -->
                 <property name="region" value="YOUR_AWS_REGION"/>
-                <!-- CHANGE: your SNS FIFO topic ARN -->
                 <property name="topicArn" value="YOUR_SNS_TOPIC_ARN"/>
-                <!-- CHANGE: IAM access key with sns:Publish permission -->
-                <property name="accessKeyId" value="YOUR_AWS_ACCESS_KEY_ID"/>
-                <!-- CHANGE: IAM secret access key -->
-                <property name="secretAccessKey" value="YOUR_AWS_SECRET_ACCESS_KEY"/>
+                <property name="accessKeyId" value=""/>
+                <property name="secretAccessKey" value=""/>
             </class>
             <filter xpath="get-property('sns.status') = 'SUCCESS'">
                 <then>
@@ -51,22 +52,15 @@
         </faultSequence>
     </resource>
 
-    <!--
-        Resource 2: POST /publish-dynamic?topicArn={arn}&messageGroupId={id}
-        Dynamic configuration — topicArn and messageGroupId are passed as query parameters.
-        Credentials are still static on the mediator (no topicArn property on the mediator itself).
-    -->
+    <!-- Resource 2: POST /publish-dynamic?topicArn={arn}&messageGroupId={id} — dynamic topicArn -->
     <resource methods="POST" uri-template="/publish-dynamic">
         <inSequence>
             <property expression="$url:topicArn" name="sns.topicArn" scope="default" type="STRING"/>
             <property expression="$url:messageGroupId" name="sns.messageGroupId" scope="default" type="STRING"/>
             <class name="org.wso2.custom.mediator.sns.SNSPublishMediator">
-                <!-- CHANGE: your AWS region -->
                 <property name="region" value="YOUR_AWS_REGION"/>
-                <!-- CHANGE: IAM access key with sns:Publish permission -->
-                <property name="accessKeyId" value="YOUR_AWS_ACCESS_KEY_ID"/>
-                <!-- CHANGE: IAM secret access key -->
-                <property name="secretAccessKey" value="YOUR_AWS_SECRET_ACCESS_KEY"/>
+                <property name="accessKeyId" value=""/>
+                <property name="secretAccessKey" value=""/>
             </class>
             <filter xpath="get-property('sns.status') = 'SUCCESS'">
                 <then>
