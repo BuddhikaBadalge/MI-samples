@@ -11,16 +11,16 @@
     <resource methods="POST" uri-template="/publish">
         <inSequence>
             <!-- Read Choreo env vars and set as properties the mediator expects -->
-            <property name="sns.accessKeyId" expression="get-property('env', 'sns_access_key_id')" scope="default" type="STRING"/>
-            <property name="sns.secretAccessKey" expression="get-property('env', 'sns_secret_access_key')" scope="default" type="STRING"/>
+            <property name="sns.accessKeyId" expression="get-property('env', 'aws_access_key_id')" scope="default" type="STRING"/>
+            <property name="sns.secretAccessKey" expression="get-property('env', 'aws_secret_access_key')" scope="default" type="STRING"/>
             <property name="sns.region" expression="get-property('env', 'sns_region')" scope="default" type="STRING"/>
             <property name="sns.topicArn" expression="get-property('env', 'sns_topic_arn')" scope="default" type="STRING"/>
             <property name="sns.messageGroupId" value="default-group" scope="default" type="STRING"/>
             <!-- Log raw env var values and resolved properties -->
             <log level="custom">
                 <property name="=== SNSTestAPI /publish ===" value="DEBUG env vars"/>
-                <property name="env.sns_access_key_id" expression="get-property('env', 'sns_access_key_id')"/>
-                <property name="env.sns_secret_access_key" expression="get-property('env', 'sns_secret_access_key')"/>
+                <property name="env.sns_access_key_id" expression="get-property('env', 'aws_access_key_id')"/>
+                <property name="env.sns_secret_access_key" expression="get-property('env', 'aws_secret_access_key')"/>
                 <property name="env.sns_region" expression="get-property('env', 'sns_region')"/>
                 <property name="env.sns_topic_arn" expression="get-property('env', 'sns_topic_arn')"/>
                 <property name="prop.sns.accessKeyId" expression="get-property('sns.accessKeyId')"/>
@@ -67,8 +67,8 @@
     <resource methods="POST" uri-template="/publish-dynamic">
         <inSequence>
             <!-- Read Choreo env vars and set as properties the mediator expects -->
-            <property name="sns.accessKeyId" expression="get-property('env', 'sns_access_key_id')" scope="default" type="STRING"/>
-            <property name="sns.secretAccessKey" expression="get-property('env', 'sns_secret_access_key')" scope="default" type="STRING"/>
+            <property name="sns.accessKeyId" expression="get-property('env', 'aws_access_key_id')" scope="default" type="STRING"/>
+            <property name="sns.secretAccessKey" expression="get-property('env', 'aws_secret_access_key')" scope="default" type="STRING"/>
             <property name="sns.region" expression="get-property('env', 'sns_region')" scope="default" type="STRING"/>
             <!-- Topic ARN and message group ID from query parameters (override env) -->
             <property expression="$url:topicArn" name="sns.topicArn" scope="default" type="STRING"/>
@@ -76,8 +76,8 @@
             <!-- Log raw env var values and resolved properties -->
             <log level="custom">
                 <property name="=== SNSTestAPI /publish-dynamic ===" value="DEBUG env vars"/>
-                <property name="env.sns_access_key_id" expression="get-property('env', 'sns_access_key_id')"/>
-                <property name="env.sns_secret_access_key" expression="get-property('env', 'sns_secret_access_key')"/>
+                <property name="env.sns_access_key_id" expression="get-property('env', 'aws_access_key_id')"/>
+                <property name="env.sns_secret_access_key" expression="get-property('env', 'aws_secret_access_key')"/>
                 <property name="env.sns_region" expression="get-property('env', 'sns_region')"/>
                 <property name="env.sns_topic_arn" expression="get-property('env', 'sns_topic_arn')"/>
                 <property name="prop.sns.accessKeyId" expression="get-property('sns.accessKeyId')"/>
