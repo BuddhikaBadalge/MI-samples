@@ -2,34 +2,30 @@
 <api context="/sns" name="SNSTestAPI" xmlns="http://ws.apache.org/ns/synapse">
 
     <!--
-        Configuration is read from WSO2 Secure Vault / Choreo ConfigMaps+Secrets.
-        Define the following keys in your vault before deploying:
+        Credentials: Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as
+        environment variables in Choreo Config & Deploy. The AWS SDK
+        DefaultCredentialsProvider picks them up automatically.
 
-          sns_region             — AWS region, e.g. eu-north-1
-          sns_topic_arn          — Full SNS topic ARN
-          aws_access_key_id      — IAM access key ID
-          aws_secret_access_key  — IAM secret access key
-                                   (leave both credential keys empty to use the
-                                    AWS Default Credentials Provider Chain instead)
-
-        For local MI pack testing without Secure Vault, add region/topicArn/credentials
-        directly as <property> elements inside the <class> mediator block.
-        See the Synapse Properties Reference in the README for details.
+        Region and Topic ARN are configured as static class mediator
+        properties below.
     -->
 
-    <!-- Resource 1: POST /publish — topic ARN from vault -->
+    <!-- Resource 1: POST /publish — static topic ARN -->
     <resource methods="POST" uri-template="/publish">
         <inSequence>
-            <!-- Read all configuration from environment variables -->
-            <propertyGroup>
-                <property expression="get-property('env', 'sns_region')" name="sns.region" scope="default" type="STRING"/>
-                <property expression="get-property('env', 'sns_topic_arn')" name="sns.topicArn" scope="default" type="STRING"/>
-                <property expression="get-property('env', 'aws_access_key_id')" name="sns.accessKeyId" scope="default" type="STRING"/>
-                <property expression="get-property('env', 'aws_secret_access_key')" name="sns.secretAccessKey" scope="default" type="STRING"/>
-                <!-- Required for FIFO topics -->
-                <property name="sns.messageGroupId" value="default-group" scope="default" type="STRING"/>
-            </propertyGroup>
-            <class name="org.wso2.custom.mediator.sns.SNSPublishMediator"/>
+            <!-- Log AWS env variable availability -->
+            <log level="custom">
+                <property name="=== SNSTestAPI /publish ===" value="Checking AWS environment variables"/>
+                <property name="AWS_ACCESS_KEY_ID" expression="get-property('env', 'AWS_ACCESS_KEY_ID')"/>
+                <property name="AWS_SECRET_ACCESS_KEY_SET" expression="boolean(get-property('env', 'AWS_SECRET_ACCESS_KEY'))"/>
+                <property name="aws.accessKeyId (system prop)" expression="get-property('system', 'aws.accessKeyId')"/>
+                <property name="aws.secretAccessKey (system prop set)" expression="boolean(get-property('system', 'aws.secretAccessKey'))"/>
+            </log>
+            <property name="sns.messageGroupId" value="default-group" scope="default" type="STRING"/>
+            <class name="org.wso2.custom.mediator.sns.SNSPublishMediator">
+                <property name="region" value="eu-north-1"/>
+                <property name="topicArn" value="arn:aws:sns:eu-north-1:567870626192:FIFO-MI.fifo"/>
+            </class>
             <filter xpath="get-property('sns.status') = 'SUCCESS'">
                 <then>
                     <payloadFactory media-type="json">
@@ -64,16 +60,20 @@
     <!-- Resource 2: POST /publish-dynamic?topicArn={arn}&messageGroupId={id} — dynamic topic ARN -->
     <resource methods="POST" uri-template="/publish-dynamic">
         <inSequence>
-            <!-- Region and credentials from environment variables -->
-            <propertyGroup>
-                <property expression="get-property('env', 'sns_region')" name="sns.region" scope="default" type="STRING"/>
-                <property expression="get-property('env', 'aws_access_key_id')" name="sns.accessKeyId" scope="default" type="STRING"/>
-                <property expression="get-property('env', 'aws_secret_access_key')" name="sns.secretAccessKey" scope="default" type="STRING"/>
-            </propertyGroup>
+            <!-- Log AWS env variable availability -->
+            <log level="custom">
+                <property name="=== SNSTestAPI /publish-dynamic ===" value="Checking AWS environment variables"/>
+                <property name="AWS_ACCESS_KEY_ID" expression="get-property('env', 'AWS_ACCESS_KEY_ID')"/>
+                <property name="AWS_SECRET_ACCESS_KEY_SET" expression="boolean(get-property('env', 'AWS_SECRET_ACCESS_KEY'))"/>
+                <property name="aws.accessKeyId (system prop)" expression="get-property('system', 'aws.accessKeyId')"/>
+                <property name="aws.secretAccessKey (system prop set)" expression="boolean(get-property('system', 'aws.secretAccessKey'))"/>
+            </log>
             <!-- Topic ARN and message group ID from query parameters -->
             <property expression="$url:topicArn" name="sns.topicArn" scope="default" type="STRING"/>
             <property expression="$url:messageGroupId" name="sns.messageGroupId" scope="default" type="STRING"/>
-            <class name="org.wso2.custom.mediator.sns.SNSPublishMediator"/>
+            <class name="org.wso2.custom.mediator.sns.SNSPublishMediator">
+                <property name="region" value="eu-north-1"/>
+            </class>
             <filter xpath="get-property('sns.status') = 'SUCCESS'">
                 <then>
                     <payloadFactory media-type="json">
