@@ -408,47 +408,5 @@
       <testServerDownloadLink></testServerDownloadLink>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.wso2.integration.connector</groupId>
-            <artifactId>mi-connector-http</artifactId>
-            <version>0.1.14</version>
-            <type>zip</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Synapse Core - provided by MI runtime -->
-        <dependency>
-            <groupId>org.apache.synapse</groupId>
-            <artifactId>synapse-core</artifactId>
-            <version>4.0.0.wso2v215_28</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Axiom (SOAP/OM API) - provided by MI runtime -->
-        <dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-all</artifactId>
-            <version>1.2.11.wso2v25_3</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- AWS SDK v2 - provided scope: the fat JAR in deployment/libs/ bundles these at runtime -->
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>sns</artifactId>
-            <version>2.25.70</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>sts</artifactId>
-            <version>2.25.70</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
   </project>
